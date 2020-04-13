@@ -1,3 +1,5 @@
+require 'dynamican/configuration'
+require 'dynamican/evaluator'
 require 'dynamican/model'
 require 'models/dynamican/condition'
 require 'models/dynamican/permission_connector'
