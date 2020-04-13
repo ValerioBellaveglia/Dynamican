@@ -69,6 +69,10 @@ To assign one of these permissions to your Role or User, you need to create a `D
 
     user.permission_connectors.create(permission: p1)
 
+Or simply
+
+    user.permissions << p1
+
 Now your user is considered able to create orders and you can check the permissions:
 
     user.can? :create, :order
@@ -79,6 +83,18 @@ Now your user is considered able to create orders and you can check the permissi
 
 You can pass as second argument (the object) a symbol, a string, the class itself and also the instance (instances are used for condition evaluations).
 You can also pass an array of these elements and permissions for all elements will be evaluated. The `can?` method will return true only if all permissions are evaluated positively.
+You can also create custom permissions which don't need an object, simply leaving the `object_name` empty. Let's say you want to give permission to a certain user to dance
+
+    p5 = Dynamican::Permission.create(action: 'dance')
+
+    user.permissions << p5
+
+Call the `can?` method without any second argument
+
+    user.can? :dance
+
+    # Returns true
+
 
 ## Conditions
 
