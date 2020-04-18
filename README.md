@@ -8,19 +8,23 @@ Inside your Gemfile put
 
 and then run `bundle install`
 
-Once you have the gem, open the source code and look for migrations folder. You need to create in your project those migrations (copy/paste the code if you don't need to adapt it) and run them. Obviously if you already have the gem installed and you are just updating it, you only need to create the migrations for the later versions of the gem. For example, if you are updating from 0.1.7 to 0.2.0 you only have to create migrations in folders with name > 0.1.7 and < 0.2.0.
-
 In each model you want to have the feature, just put the following.
 
     include Dynamican::Model
 
-Create `config/dynamican.yml` file and compile it as follows for each of the models you included the code above into (let's say for instance you included Dynamican::Model into User and Role models).
+Create `config/dynamican.yml` file in your project and compile it as follows for each of the models you included the code above into (let's say for instance you included Dynamican::Model into User and Role models).
 
     associations:
       role:
         class_name: 'Role'
       user:
         class_name: 'User'
+
+Once this config file is created, you can launch the following command.
+
+    rails generate dynamican_migration
+
+This command will generate a migration file in your project. Inside this migration, the `permission_connectors` table will have a reference column for the models you configured in the config file. If you want to add the feature to a new model after your migrations are already run (and cannot be rollbacked) you need to create a new migration to add the corresponding columns in the `permission_connectors` table.
 
 ### Using a model permissions on another model
 
@@ -52,9 +56,9 @@ I wanted to have the possibility to assign permissions both directly to my User 
       end
     end
 
-I personally have put this in `app/decorators/models/user/dynamican_overrides.rb` (you need to load the folder if you don't already have it) but you can make it work as you please. I recommend to keep it separate from the original User model though.
+I personally have put this in `app/decorators/models/user/dynamican_overrides.rb` (you need to make rails load the folder if); you can make it work as you please but i recommend to keep it separate from the original User model.
 
-WARNING: if you do this, User `permissions` and `permission_connectors` methods are not relations anymore, so methods like `<<` and `create` won't work on them.
+WARNING: if you have done this override, User `permissions` and `permission_connectors` methods are not relations anymore, so methods like `<<` and `create` won't work on them.
 
 ## Usage
 
