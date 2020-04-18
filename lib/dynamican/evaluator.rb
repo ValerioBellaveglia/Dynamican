@@ -23,7 +23,7 @@ module Dynamican
     private
 
     def set_instance_variables
-      instance_variable_set("@#{subject.model_name.element}", subject)
+      instance_variable_set("@#{subject.class.name.demodulize.underscore}", subject)
 
       conditions_instances.each do |instance_name, instance_object|
         instance_variable_set("@#{instance_name}", instance_object)
@@ -36,7 +36,7 @@ module Dynamican
       elsif object.is_a?(NilClass)
         nil
       else
-        object.class.to_s.downcase
+        object.class.name.demodulize.underscore
       end
     end
   end

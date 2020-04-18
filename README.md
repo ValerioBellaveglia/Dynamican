@@ -22,9 +22,13 @@ Create `config/dynamican.yml` file in your project and compile it as follows for
 
 Once this config file is created, you can launch the following command.
 
-    rails generate dynamican_migration
+    rails g dynamican_migration
 
 This command will generate a migration file in your project. Inside this migration, the `permission_connectors` table will have a reference column for the models you configured in the config file. If you want to add the feature to a new model after your migrations are already run (and cannot be rollbacked) you need to create a new migration to add the corresponding columns in the `permission_connectors` table.
+
+Now that you have your migration, just migrate.
+
+    rails db:migrate
 
 ### Using a model permissions on another model
 
