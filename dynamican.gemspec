@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'dynamican'
-  s.version     = '0.2.1'
-  s.date        = '2020-04-18'
+  s.version     = '1.0.0'
+  s.date        = '2020-09-08'
   s.summary     = "Dynamic permissions"
   s.description = "Dynamic and flexible database configurable permissions for your application"
   s.authors     = ["Valerio Bellaveglia"]

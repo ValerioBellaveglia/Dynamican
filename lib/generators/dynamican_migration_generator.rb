@@ -14,46 +14,41 @@ class DynamicanMigrationGenerator < Rails::Generators::Base
     # 0.1.2 Release
     def change
       unless table_exists? :permissions
-        create_table :conditions do |t|
-          t.string :description
-          t.string :statement
-
-          t.timestamps
-        end
-
         create_table :permissions do |t|
-          t.string :action
-          t.string :object_name
+          t.bigint :permittable_id
+          t.string :permittable_type
+          t.bigint :action_id
 
           t.timestamps
         end
 
-        create_table :permission_connectors do |t|
-          #{create_migration_associations_data}
-          t.references :permission
-          t.boolean :conditional, default: false
+        create_table :actions do |t|
+          t.string :name
 
           t.timestamps
         end
 
-        create_table :conditions_permission_connectors do |t|
-          t.bigint :condition_id
-          t.bigint :permission_connector_id
+        create_table :objects do |t|
+          t.string :name
+
+          t.timestamps
+        end
+
+        create_table :conditions do |t|
+          t.bigint :permission_id
+          t.string :statement
+          t.string :description
+
+          t.timestamps
+        end
+
+        create_table :objects_permissions do |t|
+          t.bigint :object_id
+          t.bigint :permission_id
         end
       end
     end
   end
 MIGRATION
-  end
-
-  def create_migration_associations_data
-    migration_associations_data = ""
-    associations = Dynamican.configuration.associations.keys
-
-    associations.each do |association|
-      migration_associations_data += "t.references :#{association}#{"\n          " unless association == associations.last}"
-    end
-
-    migration_associations_data
   end
 end

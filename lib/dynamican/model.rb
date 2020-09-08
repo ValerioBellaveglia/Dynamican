@@ -3,8 +3,7 @@ module Dynamican
     extend ActiveSupport::Concern
 
     included do
-      has_many :permission_connectors, class_name: 'Dynamican::PermissionConnector'
-      has_many :permissions, class_name: 'Dynamican::Permission', through: :permission_connectors, source: :permission
+      has_many :permissions, class_name: 'Dynamican::Permission', inverse_of: :permittable, foreign_key: :permittable_id
     end
 
     def can?(action, object = nil, conditions_instances = {})
