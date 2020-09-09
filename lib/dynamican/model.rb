@@ -3,7 +3,7 @@ module Dynamican
     extend ActiveSupport::Concern
 
     included do
-      has_many :permissions, class_name: 'Dynamican::Permission', inverse_of: :permittable, foreign_key: :permittable_id, dependent: :destroy
+      has_many :permissions, as: :permittable, dependent: :destroy
     end
 
     def can?(action, object = nil, conditions_instances = {})

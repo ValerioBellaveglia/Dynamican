@@ -1,6 +1,6 @@
 module Dynamican
   class Permission < ActiveRecord::Base
-    belongs_to :permittable, polymorphic: true, inverse_of: :permissions, foreign_key: :permittable_id
+    belongs_to :permittable, polymorphic: true
     belongs_to :action, class_name: 'Dynamican::Action', inverse_of: :permissions, foreign_key: :action_id
     has_and_belongs_to_many :objects, class_name: 'Dynamican::Object', inverse_of: :permissions, foreign_key: :permission_id
     has_many :conditions, class_name: 'Dynamican::Condition', inverse_of: :permission, foreign_key: :permission_id
