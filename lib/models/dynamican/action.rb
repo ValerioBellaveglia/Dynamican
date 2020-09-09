@@ -1,6 +1,6 @@
 module Dynamican
   class Action < ActiveRecord::Base
-    has_many :permissions, class_name: 'Dynamican::Permission', inverse_of: :action, foreign_key: :action_id
+    has_many :permissions, class_name: 'Dynamican::Permission', inverse_of: :action, foreign_key: :action_id, dependent: :destroy
 
     validates :name, presence: true, uniqueness: true
 
