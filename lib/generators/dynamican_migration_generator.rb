@@ -11,7 +11,6 @@ class DynamicanMigrationGenerator < Rails::Generators::Base
   def migration_data
 <<MIGRATION
   class DynamicanMigration < ActiveRecord::Migration[5.2]
-    # 0.1.2 Release
     def change
       unless table_exists? :permissions
         create_table :permissions do |t|
@@ -28,7 +27,7 @@ class DynamicanMigrationGenerator < Rails::Generators::Base
           t.timestamps
         end
 
-        create_table :objects do |t|
+        create_table :items do |t|
           t.string :name
 
           t.timestamps
@@ -42,8 +41,8 @@ class DynamicanMigrationGenerator < Rails::Generators::Base
           t.timestamps
         end
 
-        create_table :objects_permissions do |t|
-          t.bigint :object_id
+        create_table :items_permissions do |t|
+          t.bigint :item_id
           t.bigint :permission_id
         end
       end
