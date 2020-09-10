@@ -6,8 +6,10 @@ module Dynamican
 
     attr_readonly :name
 
-    def name
-      super.classify
+    before_validation :classify_name
+
+    def classify_name
+      self.name = self.name.classify
     end
   end
 end

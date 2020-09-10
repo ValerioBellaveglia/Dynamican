@@ -24,6 +24,7 @@ module Dynamican
 
     def set_instance_variables
       instance_variable_set("@#{subject.class.name.demodulize.underscore}", subject)
+      instance_variable_set("@#{item.class.name.demodulize.underscore}", item)
 
       conditions_instances.each do |instance_name, instance_item|
         instance_variable_set("@#{instance_name}", instance_item)
