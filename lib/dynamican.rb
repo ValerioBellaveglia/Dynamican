@@ -1,3 +1,4 @@
+require 'dynamican/authorization'
 require 'dynamican/evaluator'
 require 'dynamican/model'
 require 'models/dynamican/permission'
