@@ -120,3 +120,7 @@ You can apply the scope `for_action(action_name)` to Permission to find permissi
 There is a `for_item(item_name)` scope, which turns to string and then classifies automatically the argument to match it with the classified item name. The scope filters all Permission records that have an item with the specified name in its items list.
 There is also a `without_item` scope to filter records that are not linked to any item.
 As mentioned before, you can also use `conditional` and `unconditional` scopes to find objects with or without any condition attached.
+
+### Controller usage
+
+Your controllers now all have the `authorize!` method, which accepts one or two arguments: the first is the action, and the second (optional) is the item (or list of items) you want to check permissions for. As you can see, the usage is similar to the `can?` method. The reason is that is actually calls that method on the instance of `@current_user` and, whether permissions are evaluated as false, it raises an exception which is rescued by an `unauthorized` response rendered.
