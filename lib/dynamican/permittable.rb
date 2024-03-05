@@ -1,5 +1,5 @@
 module Dynamican
-  module Model
+  module Permittable
     extend ActiveSupport::Concern
 
     included do
@@ -10,7 +10,7 @@ module Dynamican
       if item.respond_to? :each
         item.all? { |single_item| can? action, single_item }
       else
-        Dynamican::Evaluator.new(self, action, item, conditions_instances).evaluate
+        Dynamican::Authorizer.new(self, action, item, conditions_instances).evaluate
       end
     end
   end

@@ -14,9 +14,11 @@ This command will generate a migration file in your project, which you can run w
 
     rails db:migrate
 
-In each model you want to have the feature, just put the following.
+## Permissions
 
-    include Dynamican::Model
+In each model you want to have permissions, put the following.
+
+    include Dynamican::Permittable
 
 ### Using a model permissions on another model
 
@@ -43,9 +45,9 @@ I wanted to have the possibility to assign permissions both directly to my User 
       end
     end
 
-I personally have put this in `app/decorators/models/user/dynamican_overrides.rb` (rails needs to load the folder of course); you can make it work as you please but i recommend to keep it separate from the original User model.
+I have put this in `app/decorators/models/user/dynamican_overrides.rb` (rails needs to load the folder of course); you can make it work as you please but i recommend to keep it separate from the original User model.
 
-## Usage
+### Configuration and Usage
 
 Now the hard part: the real configuration.
 
@@ -56,7 +58,7 @@ Create one `Dynamican::Action` for each action you need. For example i created C
     a3 = Dynamican::Action.create(name: 'update')
     a4 = Dynamican::Action.create(name: 'delete')
 
-Then create one `Dynamican::Item` for each resource you want your permittables to have permissions to act on. This is not mandatory for every permission though: you can also set a permission to do a general action, like `login`. Right now i'm trying to setup permissions for my permittable (Role model) to act on Order model.
+Make sure you have one `Dynamican::Item` for each resource you want your permittables to have permissions to act on. This is not mandatory for every permission though: you can also set a permission to do a general action, like `login`. Right now i'm trying to setup permissions for my permittable (Role model) to act on Order model.
 
     i1 = Dynamican::Item.create(name: 'Order')
 
@@ -108,8 +110,6 @@ You can store in conditions statements whatever conditions you like in plain rub
 2. The same thing happens with the item: it will be defined both as `@item` and as the name of its class, so if you call `user.can? :read, @order` you will have `@item` and `@order` variable defined containing your `@order` object.
 3. You can pass as third argument an hash of objects like this `user.can? :read, @order, time: Time.zone.now, whatever: @you_want` and you will have `@time` and `@whatever` variables defined.
 
-WARNING: since the condition statement gets evaluated, i recommend not to allow anyone except project developers to create conditions, in order to prevent malicious code from being executed.
-
 If one `Dynamican::Permission` is linked to many conditions, the model will be allowed to make that action only if all conditions are true. If you want to set alternative conditions, you should store the `or` conditions inside the same condition statement, like this:
 
     condition.statement = '@user.nice? || @user.polite?'
@@ -121,6 +121,50 @@ There is a `for_item(item_name)` scope, which turns to string and then classifie
 There is also a `without_item` scope to filter records that are not linked to any item.
 As mentioned before, you can also use `conditional` and `unconditional` scopes to find objects with or without any condition attached.
 
-### Controller usage
+### Controller helpers
 
 Your controllers now all have the `authorize!` method, which accepts one or two arguments: the first is the action, and the second (optional) is the item (or list of items) you want to check permissions for. As you can see, the usage is similar to the `can?` method. The reason is that is actually calls that method on the instance of `@current_user` and, whether permissions are evaluated as false, it raises an exception which is rescued by an `unauthorized` response rendered.
+
+## Filters
+
+In each model you want to have filters, put the following.
+
+    include Dynamican::Skimmable
+
+### Use skimming filters of another model
+
+If you want, you can also allow a related model (for example User) to use Role's skimming rules. In that case the in the User model you should do as follows.
+
+    skim_throught :roles
+
+### Configuration and Usage
+
+Make sure you have one `Dynamican::Item` for each class you want your skimmable models to skim.  The name of the item has to be PascalCase.
+
+    item = Skimming::Item.create(name: 'Order')
+
+Create one `Dynamican::Rule` for each condition you want to evaluate when you decide if the skimmable should keep the items of a certain collection.
+
+    rule = Skimming::Rule.create(statement: '@order.created_at < 1.month.ago')
+
+This, for example, hides all orders older than 1 month from the collection.
+
+Create one `Dynamican::Filter` for each item your model needs to skim and assign the rule.
+
+    role.create_filter(item: item, rule: rule)
+
+If now you call `role.skim orders_collection` only orders newer than 1 month ago will be returned.
+
+Also user can do that if it has the role assigned and you have specified `skim_through :roles` in User model.
+
+### Rules
+
+You can store in filters rules whatever conditions you like in plain ruby and the string will be evaulated. Inside the rules, object have to be called as instance variables. These instance variables indeed need to be present and can be declared in a few ways.
+
+1. The model name of the instance you called `skim` from, like the user, will be defined automatically based on model name, so if you call `user.skim rooms_collection` you will have `@user` variable defined.
+2. Based on the skimmed collection, instance variables are defined. In the case above, `@order` variable will be present for each of the orders to be evaluated in. The collection name is calculated based on the class of the first object in the collection and will raise an error if is not the same for all collection elements. You can override this calculation specifying the `item_name` of the collection (the skimming will look for collection_filters with that `item_name`). This can be necessary if you are filtering throught different classes instances having STI.
+3. You can pass as third argument an hash of objects like this `user.skim rooms_collection, time: Time.zone.now, whatever: @you_want` and you will have `@time` and `@whatever` variables defined for rule evaluation.
+
+
+## Security
+Since the conditions and rules statements get evaluated, it's highly recommended not to allow anyone except project developers to create them, in order to prevent unsafe code from being executed.

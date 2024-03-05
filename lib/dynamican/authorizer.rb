@@ -1,5 +1,5 @@
 module Dynamican
-  class Evaluator
+  class Authorizer
     attr_reader :subject, :action, :item, :item_name, :conditions_instances
 
     def initialize(subject, action, item, conditions_instances = {})

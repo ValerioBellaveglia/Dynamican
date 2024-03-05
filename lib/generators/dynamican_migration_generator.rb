@@ -10,44 +10,58 @@ class DynamicanMigrationGenerator < Rails::Generators::Base
 
   def migration_data
 <<MIGRATION
-  class DynamicanMigration < ActiveRecord::Migration[5.2]
-    def change
-      unless table_exists? :permissions
-        create_table :permissions do |t|
-          t.bigint :permittable_id
-          t.string :permittable_type
-          t.bigint :action_id
+class DynamicanMigration < ActiveRecord::Migration[5.2]
+  def change
+    create_table :dynamican_permissions do |t|
+      t.bigint :permittable_id
+      t.string :permittable_type
+      t.bigint :action_id
 
-          t.timestamps
-        end
+      t.timestamps
+    end
 
-        create_table :actions do |t|
-          t.string :name
+    create_table :dynamican_actions do |t|
+      t.string :name
 
-          t.timestamps
-        end
+      t.timestamps
+    end
 
-        create_table :items do |t|
-          t.string :name
+    create_table :dynamican_items do |t|
+      t.string :name
 
-          t.timestamps
-        end
+      t.timestamps
+    end
 
-        create_table :conditions do |t|
-          t.bigint :permission_id
-          t.string :statement
-          t.string :description
+    create_table :dynamican_conditions do |t|
+      t.bigint :permission_id
+      t.string :statement
+      t.string :description
 
-          t.timestamps
-        end
+      t.timestamps
+    end
 
-        create_table :items_permissions do |t|
-          t.bigint :item_id
-          t.bigint :permission_id
-        end
-      end
+    create_table :dynamican_filters do |t|
+      t.bigint :item_id
+      t.bigint :skimmable_id
+      t.string :skimmable_type
+
+      t.timestamps
+    end
+
+    create_table :dynamican_rules do |t|
+      t.bigint :filter_id
+      t.string :statement
+      t.string :name
+
+      t.timestamps
+    end
+
+    create_table :dynamican_items_dynamican_permissions do |t|
+      t.bigint :item_id
+      t.bigint :permission_id
     end
   end
+end
 MIGRATION
   end
 end
